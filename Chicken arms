@@ -1,0 +1,45 @@
+pb("chicken arms", function()
+	local player = game.Players.LocalPlayer
+	local char = player.Character or player.CharacterAdded:Wait()
+	local humanoid = char:WaitForChild("Humanoid")
+
+	local animation = Instance.new("Animation")
+	animation.AnimationId = "rbxassetid://27432686"
+	local animTrack1 = humanoid:LoadAnimation(animation)
+	animTrack1.Priority = Enum.AnimationPriority.Idle
+	animTrack1:Play()
+	animTrack1:AdjustSpeed(0)
+
+	local animation2 = Instance.new("Animation")
+	animation2.AnimationId = "rbxassetid://183695923"
+	local animTrack = humanoid:LoadAnimation(animation2)
+	animTrack.Priority = Enum.AnimationPriority.Idle
+	animTrack.Looped = true
+
+	local walking = false
+	humanoid.Running:Connect(function(speed)
+		walking = speed > 1
+		if walking and not animTrack.IsPlaying then
+			animTrack:Play()
+			animTrack1:Stop()
+		end
+		if not walking and animTrack.IsPlaying then
+			animTrack:Stop()
+			animTrack1:Play()
+			animTrack1:AdjustSpeed(0)
+		end
+	end)
+
+	task.spawn(function()
+		while true do
+			if walking then
+				animTrack:AdjustSpeed(3)
+				task.wait(0.3)
+				animTrack:AdjustSpeed(-3)
+				task.wait(0.3)
+			else
+				task.wait(0.1)
+			end
+		end
+	end)
+end)
